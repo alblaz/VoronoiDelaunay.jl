@@ -15,10 +15,12 @@ min_coord, max_coord, locate, movea, moveb, movec,
 delaunayedges, voronoiedges, voronoiedgeswithoutgenerators,
 iterate, findindex, push!,
 Point, Point2D, AbstractPoint2D, getx, gety, geta, getb, getc,
-getgena, getgenb, getplotxy
+getgena, getgenb, getplotxy,
+IndexablePoint2D
 
 using GeometricalPredicates
 import GeometricalPredicates: geta, getb, getc
+import GeometricalPredicates: getx, gety
 
 import Base: push!, iterate, copy, sizehint!
 import Colors: RGB, RGBA
@@ -26,6 +28,20 @@ using Random: shuffle!
 
 const min_coord = GeometricalPredicates.min_coord + eps(Float64)
 const max_coord = GeometricalPredicates.max_coord - eps(Float64)
+
+##############################################################################
+#add indexed points2D
+struct IndexablePoint2D <: AbstractPoint2D
+    _x::Float64
+    _y::Float64
+    _index::Int64
+end
+IndexablePoint2D(x::Float64, y::Float64) = IndexablePoint2D(x, y, -1)
+
+GeometricalPredicates.getx(p::IndexablePoint2D) = p._x
+GeometricalPredicates.gety(p::IndexablePoint2D) = p._y
+Base.getindex(p::IndexablePoint2D) = p._index
+##############################################################################
 
 mutable struct DelaunayTriangle{T<:AbstractPoint2D} <: AbstractNegativelyOrientedTriangle
     _a::T; _b::T; _c::T
